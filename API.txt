@@ -171,7 +171,12 @@ response : 200 (success)
     }
  }
 
- 2. GET api/v1/users
+ 2. GET api/v1/usersadmin/allUsers
+
+ authentication is req to get all user info ( only for super admins )
+
+ Authorization: Bearer <JWT_TOKEN>
+
 
 get all users:
 
@@ -211,7 +216,13 @@ get all users:
 
  3. to get specifuc users
 
-  GET /api/v1/user/metadata/bulk?ids=[1,3,5]
+ 
+ authentication is req to get all user info ( only for super admins )
+
+ Authorization: Bearer <JWT_TOKEN>
+
+
+  GET /api/v1/admin/users/metadata/bulk?ids=[1,3,5]
 
   returns : 200 
   {
@@ -302,12 +313,12 @@ Authorization: Bearer your_jwt_token // for verfification of the user
 }
 
 ___________________________________________________________________________________________________
-## Products
+## Products CRUD
 
 
 1. to get all the products list
 
- GET api/v1/products
+ GET api/v1/products ( access to all to view all the products )
 
  return : 200 
  {
@@ -387,13 +398,452 @@ ________________________________________________________________________________
 }
 
 
-________________________________________________________________________________
-| Role-Based Access Control (RBAC):                                             |
-| Customer	        - View their own orders, track order status                 |
-| Admin	            - Manage all orders, update status, assign deliveries       |
-| Delivery Partner	- Update order status to "Out for Delivery" or "Delivered"  |
-|_______________________________________________________________________________|
 
 
       
+2. to add a new product to the site ( only auper-admins , product manager access allowed )
 
+authentication req. for super-admins , product manager
+
+Authorization: Bearer your_jwt_token (for super-admins/product manager)
+Content-Type: application/json
+
+POST api/v1/admin/product
+
+request body: 
+
+{
+  "name": "Men's Oversized Hoodie",
+  "description": "A comfortable oversized hoodie made from premium cotton blend, perfect for casual wear.",
+  "brand": "Nike",
+  "category": "Men > Hoodies & Sweatshirts",
+  "price": 49.99,
+  "discountPrice": 39.99,
+  "currency": "USD",
+  "stock": {
+    "quantity": 200,
+    "status": "in_stock"
+  },
+  "sizes": ["S", "M", "L", "XL", "XXL"],
+  "colors": [
+    {
+      "name": "Black",
+      "hex": "#000000",
+      "image": "https://example.com/images/hoodie-black.jpg"
+    },
+    {
+      "name": "Beige",
+      "hex": "#F5F5DC",
+      "image": "https://example.com/images/hoodie-beige.jpg"
+    }
+  ],
+  "variants": [
+    {
+      "color": "Black",
+      "size": "S",
+      "stock": 50
+    },
+    {
+      "color": "Black",
+      "size": "M",
+      "stock": 40
+    },
+    {
+      "color": "Beige",
+      "size": "L",
+      "stock": 30
+    }
+  ],
+  "fabric": "80% Cotton, 20% Polyester",
+  "fit": "Oversized",
+  "gender": "Men",
+  "season": "Fall/Winter",
+  "images": [
+    "https://example.com/images/hoodie-front.jpg",
+    "https://example.com/images/hoodie-back.jpg"
+  ],
+  "careInstructions": [
+    "Machine wash cold",
+    "Do not bleach",
+    "Tumble dry low",
+    "Iron on low heat"
+  ],
+  "shipping": {
+    "freeShipping": true,
+    "estimatedDelivery": "3-5 days"
+  },
+  "returnPolicy": "30-day return policy",
+  "paymentOptions": ["Credit Card", "UPI", "Net Banking", "Wallet", "EMI", "Buy Now Pay Later"],
+  "metadata": {
+    "seoTitle": "Men's Oversized Hoodie - Comfortable & Stylish",
+    "seoDescription": "Buy the best oversized hoodie for men. Premium cotton blend, perfect for casual wear in fall and winter.",
+  }
+}
+
+respoonse : 200 (success)
+
+{
+  "success" : true,
+  "message" : "Product added successfully",
+  "product" : {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Men's Oversized Hoodie",
+    "createdAt": "2025-02-26T10:15:30Z"
+  }
+}
+
+error: 
+
+for JWT Missing or Invalid : 
+{
+  "success" : false,
+  "code" : 401,
+  "message" : "Unauthorized . Please log in"
+}
+
+
+for User is Not Super-Admin or Product Manager : 
+{
+  "success": false,
+  "code" : 403,
+  "message": "Access denied. Only super-admins and product managers can add products."
+}
+
+for Missing Required Fields : 
+
+{
+"success" : false,
+"code" : 400,
+"message" : "Missing fields"
+}
+
+3. to get a specific product using productId
+
+we dont need aunthentication for basic product info as frontend also req's it ans users who havnt signedup or loggedin can also browse the site
+GET api/v1/product/:id
+
+response body:
+{
+  "id": "CLOTH123",
+  "name": "Men's Oversized Hoodie",
+  "description": "A comfortable oversized hoodie made from premium cotton blend, perfect for casual wear.",
+  "brand": "Nike",
+  "category": "Men > Hoodies & Sweatshirts",
+  "price": 49.99,
+  "discountPrice": 39.99,
+  "currency": "USD",
+  "stock": {
+    "quantity": 200,
+    "status": "in_stock"
+  },
+  "sizes": ["S", "M", "L"],
+  "colors": [
+    {
+      "name": "Black",
+      "hex": "#000000",
+      "image": "https://example.com/images/hoodie-black.jpg"
+    },
+    {
+      "name": "Beige",
+      "hex": "#F5F5DC",
+      "image": "https://example.com/images/hoodie-beige.jpg"
+    }
+  ],
+  "variants": [
+    {
+      "id": "CLOTH123-BLACK-S",
+      "color": "Black",
+      "size": "S",
+      "stock": 50
+    },
+    {
+      "id": "CLOTH123-BLACK-M",
+      "color": "Black",
+      "size": "M",
+      "stock": 40
+    },
+    {
+      "id": "CLOTH123-BEIGE-L",
+      "color": "Beige",
+      "size": "L",
+      "stock": 30
+    }
+  ],
+  "fabric": "80% Cotton, 20% Polyester",
+  "fit": "Oversized",
+  "gender": "Men",
+  "season": "Fall/Winter",
+  "images": [
+    "https://example.com/images/hoodie-front.jpg",
+    "https://example.com/images/hoodie-back.jpg"
+  ],
+  "rating": 4.7,
+  "reviewsCount": 320,
+  "careInstructions": [
+    "Machine wash cold",
+    "Do not bleach",
+    "Tumble dry low",
+    "Iron on low heat"
+  ],
+  "shipping": {
+    "freeShipping": true,
+    "estimatedDelivery": "3-5 days"
+  },
+  "returnPolicy": "30-day return policy",
+  "paymentOptions": [
+    "Credit Card",
+    "UPI",
+    "Net Banking",
+    "Wallet",
+    "EMI",
+    "Buy Now Pay Later"
+  ],
+  "metadata": {
+    "seoTitle": "Men's Oversized Hoodie - Comfortable & Stylish",
+    "seoDescription": "Buy the best oversized hoodie for men. Premium cotton blend, perfect for casual wear in fall and winter."
+  }
+}
+
+error : 
+
+if product not found
+{
+  "success" : false,
+  "code" : 404,
+  "message" : "Product not found"
+}
+
+
+4. delete a product
+
+authentication req  ( only super-admins and product manager)
+
+
+Authorization Bearer <JWT_TOKEN>
+
+DELETE api/v1/product/:id
+
+response : 200 
+
+{
+  "success": true,
+  "code": 200,
+  "message": "Product deleted successfully"
+}
+
+error : 
+
+{
+  "success" : false,
+  "code" : 401,
+  "message" : "Unauthorized . Please log in "
+}
+
+{
+  "success" : false,
+  "code " : 403,
+  "message": "Access denied. Only super-admins and product managers can add products."
+
+}
+
+{
+  "success": false,
+  "code": 400,
+  "message": "Invalid product ID format."
+}
+
+{
+  "success": false,
+  "code": 404,
+  "message": "product not found."
+}
+
+6. update a product
+
+aunthentication is required(only super-admins or prodcut manager can update a product)
+
+Authorization Bearer <JWT_TOKEN>
+
+PUT api/v1/product/:id
+
+// only send those fields which are needed to be update
+request body:
+{
+  "discountPrice" : 36.99
+}
+
+error : 
+ Product ID does not exist.
+
+ {
+    "success" : false,
+    "code" : 404,
+    "message" : " Product does not exist"
+
+ }
+
+
+jwt missing or invalid
+{
+  "success" : false,
+  "code" : 401,
+  "message" : "Unauthorized . Please log in"
+}
+
+
+for User is Not Super-Admin or Product Manager : 
+{
+  "success": false,
+  "code" : 403,
+  "message": "Access denied. Only super-admins and product managers can add products."
+}
+
+for invalid data format: 
+
+{
+"success" : false,
+"code" : 400,
+"message" : "invalid data"
+}
+
+
+_______________________________________________________________________________
+## brand
+
+1. get all the registered brand detail on the website
+
+
+GET /api/v1/brand ( access to all to view all the brands )
+
+return : 200 (success)
+{
+  "success" : true ,
+  "brands" : [
+    {
+      "ID" : "1",
+      "name" : "Zara",
+      "no_of_Products" : "12",
+      "description": "Zara is a global fashion brand offering stylish clothing and accessories.",
+      "category": ["Fashion", "Apparel"],
+      "image" : "url../of/theimage/or/logo,
+      "products": [
+      {
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "name": "Men's Oversized Hoodie",
+        "price": 49.99,
+        "stock": 100
+      },
+      {
+        "id": "223e4567-e89b-12d3-a456-426614174000",
+        "name": "Men's Slim Fit Jeans",
+        "price": 59.99,
+        "stock": 50
+      }
+    ]
+    },
+    {
+      "ID" : "2",
+      "name" : "Prada",
+      "no_of_Products" : "10",
+      "description": "Prada is a global fashion brand offering stylish clothing and accessories.",
+      "category": ["Fashion", "Apparel"],
+      "image" : "url../of/theimage/or/logo,
+      "products" : []
+    },
+    {
+      ...
+    },
+    {
+      ...
+    }
+
+  ]
+}
+
+2. ADD new brand detail
+
+POST api/v1/brand
+
+authentication required (only super-admins , product manager are allowed )
+
+request body : 
+{
+  "name": "Zara",
+  "description": "Zara is a global fashion brand offering stylish clothing and accessories.",
+  "category": ["Fashion", "Apparel"],
+  "image": "https://example.com/zara-logo.png"
+}
+
+response : 200
+
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "brand deatil added"
+}
+
+
+error: 
+
+{
+  "success": false,
+  "code": 401,
+  "message": "Unauthorized. Please log in."
+}
+
+
+{
+  "success": false,
+  "code": 403,
+  "message": "Access denied. Only super-admins and product managers can add brands."
+}
+
+
+{
+  "success": false,
+  "code": 400,
+  "message": "Missing required fields: name, category, or image."
+}
+
+3. DELETE brabd details
+
+authentication required (only super-admins , product manager are allowed )
+
+
+Authorization: Bearer your_jwt_token (for super-admins/product manager)
+
+
+response : 200 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "details deleted successfully"
+}
+
+error : 
+
+for JWT Missing or Invalid : 
+{
+  "success" : false,
+  "code" : 401,
+  "message" : "Unauthorized . Please log in"
+}
+
+for User is Not Super-Admin or Product Manager : 
+{
+  "success": false,
+  "code" : 403,
+  "message": "Access denied. Only super-admins and product managers can add products."
+}
+
+{
+  "success": false,
+  "code": 404,
+  "message": "Brand not found."
+}
+
+{
+  "success": false,
+  "code": 400,
+  "message": "Invalid brand ID format."
+}
