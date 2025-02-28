@@ -805,7 +805,7 @@ error:
   "message": "Missing required fields: name, category, or image."
 }
 
-3. DELETE brabd details
+3. DELETE brand details
 
 authentication required (only super-admins , product manager are allowed )
 
@@ -847,3 +847,79 @@ for User is Not Super-Admin or Product Manager :
   "code": 400,
   "message": "Invalid brand ID format."
 }
+
+
+4. update brand details
+
+authentication required (only super-admins , product manager are allowed )
+
+
+Authorization: Bearer your_jwt_token (for super-admins/product manager)
+Content-Type: application/json
+
+
+PUT api/v1/brand/:id
+
+request body :
+{
+  "description": "ghsd shjvhdbvhg ",
+  "image" : "image/url/...."
+}
+
+response : 200 
+
+
+{
+  "success" : true,
+  "code" : 20 ,
+  "message" : "info updated successfully"
+}
+
+error : 
+
+{
+  "success" : false,
+  "code" : 401,
+  "message" : "Unauthorized . Please log in "
+}
+
+
+
+{
+  "success" : false,
+  "code " : 403,
+  "message": "Access denied. Only super-admins and product managers can add products."
+
+}
+
+{
+  "success": false,
+  "code": 400,
+  "message": "Invalid brand ID format."
+}
+
+{
+  "success": false,
+  "code": 400,
+  "message": "Invalid data fromat"
+}
+
+{
+  "success": false,
+  "code": 404,
+  "message": "brand not found."
+}
+
+_______________________________________________________________________________
+## comments
+
+1. add  a comment
+
+authentication is required (for user)
+
+Authorization: Bearer <JWT_TOKEN> 
+Content-Type: application/json
+
+POST api/v1/product/:id/comment
+
+
