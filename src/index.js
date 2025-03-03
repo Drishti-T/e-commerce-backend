@@ -1,6 +1,6 @@
 // add all imports at top
-import Hono from "hono";
-import dotenv, { config } from "dotenv";
+import { Hono } from "hono";
+import dotenv from "dotenv";
 
 
 //load environment variables from .env file
@@ -8,7 +8,7 @@ dotenv.config();
 const env = process.env.NODE_ENV || "development";
 
 //Load appropriate env file using dotenv
-config({  path: env === 'test' ? '.env.test'   : env === 'development'   ? '.env.development'  : '.env' });
+config({ path: env === 'test' ? '.env.test' : env === 'development' ? '.env.development' : '.env' });
 
 
 // variables
@@ -17,8 +17,31 @@ const PORT = 3000 || process.env.PORT //default route
 
 
 //routes
-app.get('/' , (c) => {
+app.get('/', (c) => {
+    // for example:
 
+
+    // request:-
+    // const userId = c.req.param('id'); // Similar to req.params.id in Express
+    // const query = c.req.query('search'); // Similar to req.query.search in Express
+    // const body = await c.req.parseBody(); // Similar to req.body in Express
+
+
+    // response:-
+    // c.text("hello")
+
+    // c.html(<html>
+    //     <body>
+    //         <div>
+    //             hello
+    //         </div>
+    //     </body>
+    // </html>)
+
+
+    c.json({
+        "message": "hello from server"
+    })
 })
 
 
