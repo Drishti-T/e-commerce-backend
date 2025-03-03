@@ -5,7 +5,7 @@ This setup provides the minimal setup to help you get started
 ## After forking and then cloning the repo make sure to do the following steps
 - npm install
 
-## here we are woring with hono instead of express 
+## Here we are working with hono instead of express 
 - npm install Hono
 
 ## how will you run the project
