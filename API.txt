@@ -922,4 +922,175 @@ Content-Type: application/json
 
 POST api/v1/product/:id/comment
 
+request body : 
+{
+  "comment" : "Fits perfectly n nice color"
+}
+
+response : 200 
+{
+  "success" : true
+  "code" : 200
+  "message" : "commented successfully",
+}
+
+error: 
+
+{
+ "success" : false,
+ "code" : 401,
+ "message" : "Unauthorized"
+}
+
+{
+  "success" : false,
+  "code" : 403,
+  "message" : "Forbidden. You cannot update this comment."
+}
+
+{
+  "success" : false,
+  "code" : 400,
+  "message" : "missing fields"
+}
+
+{
+  "success" : false ,
+  "code" : 404,
+  "message" : "product not found"
+}
+
+2. delete a comment 
+
+(only super-admins are allowed )
+
+authentication req. for super-admins 
+
+Authorization: Bearer your_jwt_token (for super-admins)
+Content-Type: application/json
+
+DELETE api/v1/admin/comment/:id
+
+response : 200 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "successfully removed the comment"
+}
+
+error: 
+
+{
+  "success: " false ,
+  "code" : 401,
+  "message" : "Unauthorized. Please log in."
+}
+
+{
+  "success" : false,
+  "code" : 400,
+  "message" : "missing fields"
+}
+
+{
+  "success" :false,
+  "code" : 404,
+  "message" : "Comment not found"
+}
+{
+  "success" : false,
+  "code" : 403,
+  "message" : "forbidden"
+}
+
+{
+  "message": "Internal server error",
+  "code": 500
+}
+
+3. update a comment
+
+authentication is required (for super-admins only)
+
+Authorization: Bearer <JWT_TOKEN> 
+Content-Type: application/json
+
+PUT api/v1/admin/comment/:id
+
+request body : 
+
+{
+  "comment" : "small size (Edited)"
+}
+
+response : 200 
+{
+  "success" : true
+  "code" : 200
+  "message" : "commente updated successfully",
+}
+
+error: 
+
+{
+  "success: " false ,
+  "code" : 401,
+  "message" : "Unauthorized. Please log in."
+}
+
+{
+  "success" : false,
+  "code" : 400,
+  "message" : "missing fields"
+}
+
+{
+  "success" :false,
+  "code" : 404,
+  "message" : "comment not found"
+}
+{
+  "success" : false,
+  "code" : 403,
+  "message" : "forbidden"
+}
+
+4. to  read a comment by id
+
+GET api/v1/comment/:id
+
+response : 200 
+{
+  "success": true,
+  "code": 200,
+  "message": "Comment fetched successfully",
+  "data": {
+    "comment": "blahblah"
+  }
+}
+
+error: 
+
+{
+  "success" :false,
+  "code" : 400,
+  "message" : "Invalid comment id"
+}
+
+{
+  "success": false,
+  "code": 404,
+  "message": "Comment not found"
+}
+
+{
+  "success" :false,
+  "code" : 500,
+  "message" : "Internal error"
+}
+
+
+
+
+
 
