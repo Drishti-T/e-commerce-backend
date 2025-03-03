@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev" : "NODE_ENV=development node index.js",
+    "test-env" : "NODE_ENV=test node index.js",
+    "start" : "NODE_ENV=production node index.js",
+    "test-error": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
