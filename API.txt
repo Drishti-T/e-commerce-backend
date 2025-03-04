@@ -95,6 +95,10 @@ ________________________________________________________________________________
             }
 
 
+
+
+
+
 3. Signup / login ( both are same for 0auth )
 
     => POST api/v1/auth/oauth
@@ -143,8 +147,193 @@ ________________________________________________________________________________
             {
                 "message" : "If the email exists, a reset link has been sent"
             }
-
+// in case of 0auth the password change hppns thorugh the providers interface not the application
          
+5. logout (traditional and 0auth )
+
+Authorization: Bearer <your_jwt_token>
+
+
+POST api/v1/auth/logout  & POST api/v1/auth/0auth/logout
+or we could merge both in a single API
+
+request body (only for 0auth):
+{
+  "provider" : "google"
+}
+
+response body: 200
+{
+ "message" : "logged out successfully"
+}
+
+error: 
+{
+  "success" : false,
+  "code" :500,
+  "message" : "internal error"
+}
+
+
+{
+  "success" : false,
+  "code" :401,
+  "message": "User not authenticated"
+}
+
+
+
+{
+  "success" : false,
+  "code" :400,
+  "message": "Bad request"
+}
+
+{  
+  "success" : false,
+  "code" :403,
+  "message": "Forbidden request"
+}
+
+{
+  "success" : false,
+  "code" :404,
+  "message": "Endpoint not found"
+}
+
+6. refreshtoken (Traditional)
+Authorization: Bearer your_request_token
+
+POST api/v1/auth/refreshToken
+
+response : 200
+
+{
+    "token": "your_new_jwt_token",
+    "expiresIn": 3600,
+    "refreshToken": "new_refresh_token"
+}
+
+error:
+{
+    "success": false,
+    "code": 400,
+    "message": "Refresh token is required"
+}
+
+{
+    "success": false,
+    "code": 401,
+    "message": "Invalid or expired refresh token"
+}
+
+{
+    "success": false,
+    "code": 403,
+    "message": "Refresh token does not match user"
+}
+
+{
+    "success": false,
+    "code": 500,
+    "message": "Internal server error"
+}
+
+7. refreshTOken (0auth)
+
+Authorization: Bearer your_request_token
+
+POST api/v1/auth/0auth/refreshToken
+
+request body: 
+{
+  "provider" : "google"
+}
+
+response : 200
+
+{
+    "token": "your_new_jwt_token",
+    "expiresIn": 3600,
+    "refreshToken": "new_refresh_token"
+}
+
+error:
+{
+    "success": false,
+    "code": 400,
+    "message": "Refresh token is required"
+}
+
+{
+    "success": false,
+    "code": 401,
+    "message": "Invalid or expired refresh token"
+}
+
+{
+    "success": false,
+    "code": 403,
+    "message": "Refresh token does not match user"
+}
+
+{
+    "success": false,
+    "code": 500,
+    "message": "Internal server error"
+}
+
+8. verify email (Traditional)
+=>Verification via Email & OTP Code
+
+=> For initial email verification, do not use auth headers.
+=> For actions by authenticated users, such as resending the verification link, consider using auth headers to ensure security.
+=> no need of verification in 0auth
+
+
+request body:
+{
+    "email": "drishti@gmail.com",
+    "otpCode": "123456"
+}
+
+response : 200
+{
+    "message": "Email verified successfully!"
+}
+
+error :
+
+{
+    "success": false,
+    "code": 403,
+    "message": "Email already verified"
+}
+
+{
+    "success": false,
+    "code": 404,
+    "message": "Email not found"
+}
+
+{
+    "success": false,
+    "code": 500,
+    "message": "Internal server error"
+}
+
+{
+    "success": false,
+    "code": 401,
+    "message": "Invalid or expired OTP code"
+}
+
+{
+    "success": false,
+    "code": 400,
+    "message": "Missing or invalid fields"
+}
+
 
 ___________________________________________________________________________________________________
 
@@ -157,6 +346,8 @@ update the user's metadata:
 
 Authorization: Bearer your_jwt_token
 Content-Type: application/json
+
+whatever needs to be updated will be included in the request body
 {
     "name" : "drishtitanwar"
 }
@@ -167,100 +358,18 @@ response : 200 (success)
     "message: "updated successfully",
     "user" : {
         "id" : "123",
-        "name" : "drishtitanwar"
+        "name" : "drishtitanwar",
+        "updatedAt" : 2024-10-26T10:00:00Z,
+        "updatedBy" : "user" or "admin"
     }
  }
 
- 2. GET api/v1/usersadmin/allUsers
-
- authentication is req to get all user info ( only for super admins )
-
- Authorization: Bearer <JWT_TOKEN>
 
 
-get all users:
 
- return : 200 (success)
- {
-    "status"" : "success",
-    "users" : [
-        {
-            "id" : "123",
-            "name" : "drishti",
-            "email" : "dristhi@gmail.com",
-            "avatar" : "https://.....url"
-            "provider" : "google",
-            "createdAt" : "2024-02-26T10:00:00Z"
-        },
-        {
-            "id": "456",
-            "name": "Alice Smith",
-            "email": "alice@example.com",
-            "avatar": "https://lh3.googleusercontent.com/...",
-            "provider": "apple",
-            "createdAt": "2024-02-25T12:30:00Z"
-        }.
-        {
-            ....
-        },
-        {
-            ....
-        }
-    ]
- }
+2. particular user's order list
 
- error: 404 (not found)
- {
-    "message" : "users not found"
- }
-
- 3. to get specifuc users
-
- 
- authentication is req to get all user info ( only for super admins )
-
- Authorization: Bearer <JWT_TOKEN>
-
-
-  GET /api/v1/admin/users/metadata/bulk?ids=[1,3,5]
-
-  returns : 200 
-  {
-    "status" : "success" ,
-    "users" : [
-        {
-          "id" : "1",
-            "name" : "drishti",
-            "email" : "dristhi@gmail.com",
-            "avatar" : "https://.....url"
-            "provider" : "google",
-            "createdAt" : "2024-02-26T10:00:00Z"
-        },  
-        {
-            "id" : "3",
-            "name" : "sam",
-            "email" : "sam@gmail.com",
-            "avatar" : "https://.....url"
-            "provider" : "google",
-            "createdAt" : "2024-04-26T10:00:00Z"
-        },
-        {
-            "id" : "5",
-            "name" : "alex",
-            "email" : "alex@gmail.com",
-            "avatar" : "https://.....url"
-            "provider" : "apple",
-            "createdAt" : "2024-10-26T10:00:00Z"
-        },
-        }
-        
-    ]
-  }
-
-
-4. particular user's order list
-
- GET api/v1/user/order
+ GET api/v1/user/me/order
 
 Authorization: Bearer your_jwt_token // for verfification of the user
 
@@ -311,6 +420,23 @@ Authorization: Bearer your_jwt_token // for verfification of the user
     }
   ]
 }
+
+3. GET /api/v1/users/me
+Authorization: Bearer your_jwt_token // for verfification of the user
+
+
+response : 200 
+{
+  "id" : "1",
+  "name" : "drishti",
+  "email" : "dristhi@gmail.com",
+  "avatar" : "https://.....url",
+  ....depends on what do we need to display on the user's dashboard
+
+},  
+
+
+
 
 ___________________________________________________________________________________________________
 ## Products CRUD
@@ -480,7 +606,7 @@ request body:
   }
 }
 
-respoonse : 200 (success)
+response : 200 (success)
 
 {
   "success" : true,
@@ -762,7 +888,7 @@ return : 200 (success)
 
 2. ADD new brand detail
 
-POST api/v1/brand
+POST api/v1/admin/brand
 
 authentication required (only super-admins , product manager are allowed )
 
@@ -811,7 +937,7 @@ authentication required (only super-admins , product manager are allowed )
 
 
 Authorization: Bearer your_jwt_token (for super-admins/product manager)
-
+DELETE api/v1/admin/brand/:id
 
 response : 200 
 {
@@ -858,7 +984,7 @@ Authorization: Bearer your_jwt_token (for super-admins/product manager)
 Content-Type: application/json
 
 
-PUT api/v1/brand/:id
+PUT api/v1/admin/brand/:id
 
 request body :
 {
@@ -1088,6 +1214,135 @@ error:
   "code" : 500,
   "message" : "Internal error"
 }
+
+_______________________________________________________________________________
+## user management
+
+ 2. GET api/v1/usersadmin/metadata/allUsers
+ or if only name is the priority
+ GET /api/v1/usersadmin/metadata/allUsers?fields=name
+
+ authentication is req to get all user info ( only for super admins )
+
+ Authorization: Bearer <JWT_TOKEN>
+
+
+get all users:
+
+ return : 200 (success)
+ {
+    "status"" : "success",
+    "users" : [
+        {
+            "id" : "123",
+            "name" : "drishti",
+            "email" : "dristhi@gmail.com",
+            "avatar" : "https://.....url"
+            "provider" : "google",
+            "createdAt" : "2024-02-26T10:00:00Z"
+        },
+        {
+            "id": "456",
+            "name": "Alice Smith",
+            "email": "alice@example.com",
+            "avatar": "https://lh3.googleusercontent.com/...",
+            "provider": "apple",
+            "createdAt": "2024-02-25T12:30:00Z"
+        }.
+        {
+            ....
+        },
+        {
+            ....
+        }
+    ]
+ }
+
+ error: 404 (not found)
+ {
+    "message" : "users not found"
+ }
+
+ 3. to get specific users
+
+ 
+ authentication is req to get all user info ( only for super admins )
+
+Authorization: Bearer your_jwt_token (for super-admins)
+
+
+  GET /api/v1/admin/users/metadata/bulk?ids=[1,3,5]
+
+  returns : 200 
+  {
+    "status" : "success" ,
+    "users" : [
+        {
+          "id" : "1",
+            "name" : "drishti",
+            "email" : "dristhi@gmail.com",
+            "avatar" : "https://.....url"
+            "provider" : "google",
+            "role" : "user",
+            "createdAt" : "2024-02-26T10:00:00Z"
+        },  
+        {
+            "id" : "3",
+            "name" : "sam",
+            "email" : "sam@gmail.com",
+            "avatar" : "https://.....url"
+            "provider" : "google",
+            "role" : "user",
+            "createdAt" : "2024-04-26T10:00:00Z"
+        },
+        {
+            "id" : "5",
+            "name" : "alex",
+            "email" : "alex@gmail.com",
+            "avatar" : "https://.....url"
+            "provider" : "apple",
+            "role" : "user",
+            "createdAt" : "2024-10-26T10:00:00Z"
+        },
+        }
+        
+    ]
+  }
+
+
+
+
+3. PUT /api/v1/admin/users/metadata/:id
+
+Authorization: Bearer your_jwt_token (for super-admins)
+
+request : 
+
+{
+  "name" : "drishtitanwar",
+  "role" : "admin"
+}
+
+response : 200
+{
+  "success" : true,
+  "code" : 200,
+  "user" : 
+  {
+    "id" : "123",
+    "name" : "drishtitanwar",
+    "role" : "admin",
+    "updatedAt" : 2024-10-26T10:00:00Z,
+    "updatedBy" : "user" or "admin"
+  }
+
+}
+
+error : 403 Forbidden : only admins allowed, 
+        404 user not found,
+        400 bad request : invalid fields,
+        401 unauthorized,
+        500 internal error
 
 
 

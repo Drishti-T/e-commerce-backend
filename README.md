@@ -8,6 +8,12 @@ This setup provides the minimal setup to help you get started
 ## Here we are working with hono instead of express 
 - npm install Hono
 
+## Also we will be using few more extra libraries
+- cookie-parser
+- cors
+- jsonwebtoken
+- path 
+
 ## how will you run the project
 - make sure to check the package.json file
 - i have included scripts inside the package.json
