@@ -1346,6 +1346,134 @@ error : 403 Forbidden : only admins allowed,
 
 
 
+4. DELETE a user
+
+ authentication is req to get all user info ( only for super admins )
+Authorization: Bearer your_jwt_token (for super-admins)
+
+  DELETE /api/v1/admin/users/metadata/bulk?ids=[1]
+
+  response : 200
+  {
+    "success": true,
+    "code":200,
+    "message" : "user deleted successfully"
+  }
+
+
+error : 403 Forbidden : only admins allowed, 
+        404 user not found,
+        400 bad request : invalid user id,
+        401 unauthorized,
+        500 internal error
+
+    
+
+_______________________________________________________________________________
+## Product management
+
+1. search a product
+
+no authentication is req. since any user can search for the products
+
+GET api/v1/products/search?query={query}
+GET /api/v1/products/search?query=laptop&query=phone&query=tablet
+
+url will look like: 
+
+response: 200
+
+{
+
+"success" : true,
+"code" : 200,
+"query" : [laptop , phone , tablet]
+"products" : [
+  {
+    id: 123,
+    "name" : "blah blah laptop",
+    "price" : 120000,
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+  {
+    id: 1334,
+    "name" : "ifruity phone",
+    "price" : 150000,
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+  {
+    id: 1334,
+    "name" : "ifruity pad",
+    "price" : 150000,
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+]
+
+
+}
+
+2. filter products
+
+no auth is req.
+
+more filtes will be added if required as per the need:
+category = Tshirts , Shorts , Shirts , Hoodie , Jeans , Skirts , Shoes , Heels etc....
+minPrice 
+maxPrice
+color
+dressStyle = Casual , Formal , Party , Gym etc....
+size
+
+GET /api/v1/products/filter?category={category}&color={color}&dressStyle={dressStyle}&size={size}&price[min]={minPrice}&price[max]={maxPrice}
+
+example: GET /api/v1/products/filter?category=electronics&price[min]=100&price[max]=500
+
+
+response : 200
+{
+  "success" : true,
+  "code" : 200,
+  filters: [electronics , black , 100000 , 150000]
+  "products" : [
+    {
+    id: 123,
+    "name" : "blah blah laptop",
+    "price" : 120000,
+    "color" : "black",
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+  {
+    id: 1334,
+    "name" : "ifruity phone",
+    "price" : 150000,
+    "color" : "black",
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+  {
+    id: 1334,
+    "name" : "ifruity pad",
+    "price" : 150000,
+    "color" : "black",
+    "category" : "Electronics",
+    "imageUrl" : "https://example.com/laptop.jpg"
+  },
+  ]
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
