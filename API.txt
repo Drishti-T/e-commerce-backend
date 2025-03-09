@@ -1153,7 +1153,7 @@ response : 200
 {
   "success" : true
   "code" : 200
-  "message" : "commente updated successfully",
+  "message" : "comment updated successfully",
 }
 
 error: 
@@ -1309,15 +1309,12 @@ Authorization: Bearer your_jwt_token (for super-admins)
     ]
   }
 
-
-
-
 3. PUT /api/v1/admin/users/metadata/:id
 
 Authorization: Bearer your_jwt_token (for super-admins)
+Content-Type: application/json
 
 request : 
-
 {
   "name" : "drishtitanwar",
   "role" : "admin"
@@ -1346,6 +1343,9 @@ error : 403 Forbidden : only admins allowed,
 
 
 
+
+
+
 4. DELETE a user
 
  authentication is req to get all user info ( only for super admins )
@@ -1367,7 +1367,6 @@ error : 403 Forbidden : only admins allowed,
         401 unauthorized,
         500 internal error
 
-    
 
 _______________________________________________________________________________
 ## Product management
@@ -1387,7 +1386,7 @@ response: 200
 
 "success" : true,
 "code" : 200,
-"query" : [laptop , phone , tablet]
+"query" : ["laptop" , "phone" , "tablet"],
 "products" : [
   {
     id: 123,
@@ -1465,15 +1464,102 @@ response : 200
   ]
 }
 
+error : 
+{
+  "success" : false,
+  "code" : 400,
+  "message" : "query parameter is required"
+}
+
+{
+  "success" : false,
+  "code" : 404,
+  "message" : "No products found"
+}
+
+{
+  "success" : false,
+  "Code" ; 422,
+  "message" : "unprocessable filters"
+}
+
+{
+  "success" : false,
+  "code" : 500,
+  "message" : "internal error"
+}
+
+_______________________________________________________________________________
+
+##category management
+
+we dont need authentication here
+
+1. get all categories
+
+response : 200
+{
+"success" : true,
+"code" : 200,
+"categories" : [
+  {
+    "id" : 3487,
+    "name" : "T-shirt",
+    "image" : "https://exam
+  },
+  {
+    "id" : 7584,
+    "name" : "Skirts",
+    "image" : "https://exampale.com/image1.jpg"
+  },
+  {
+    ....
+  }
+]
+}
+
+error: 
+
+500 internal error
+200 empty array categories not found
+
+2. 
 
 
 
+_______________________________________________________________________________
+## cart management
 
 
 
+_______________________________________________________________________________
+## whishlist management
+
+_______________________________________________________________________________
+## order management
+
+_______________________________________________________________________________
+
+##payment management
+
+_______________________________________________________________________________
+## shipping management
 
 
+_______________________________________________________________________________
+## review management
 
 
+_______________________________________________________________________________
+## notifcation management
+
+
+_______________________________________________________________________________
+
+## discount and coupon management
+
+
+_______________________________________________________________________________
+## analytics & repots (admin )
 
 
