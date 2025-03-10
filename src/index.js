@@ -1,6 +1,8 @@
 // add all imports at top
 import { Hono } from "hono";
 import dotenv from "dotenv";
+import authRouter from "./auth";
+import OauthRouter from "./auth/0auth";
 
 
 //load environment variables from .env file
@@ -17,6 +19,8 @@ const PORT = 3000 || process.env.PORT //default route
 
 
 //routes
+
+//default route 
 app.get('/', (c) => {
     // for example: hono template below for request and response
 
@@ -42,11 +46,15 @@ app.get('/', (c) => {
     c.json({
         "message": "hello from server"
     })
-})
+});
+
+
+app.route('/api/v1/auth' , authRouter);
+app.route('/api/v1/auth/Oauth' , OauthRouter);
 
 
 
 //port
 app.listen(PORT, () => {
     console.log(`server is running on ${PORT}`)
-})
+});
