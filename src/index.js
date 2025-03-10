@@ -18,7 +18,7 @@ const PORT = 3000 || process.env.PORT //default route
 
 //routes
 app.get('/', (c) => {
-    // for example:
+    // for example: hono template below for request and response
 
 
     // request:-
