@@ -1661,7 +1661,7 @@ _______________________________________________________________________________
 = signedup user request
 POST api/v1/user/cart
 
-Authorization Bearer <JWT_TOKEN>
+Authorization Bearer <JWT_TOKEN>  (user only)
 Content-Type: application/json
 
   => here :Database Structure: The cart is linked to the userId rather than a cartId
@@ -1707,7 +1707,273 @@ error :
 
 
 
-2. 
+2. get cart items
+
+GET api/v1/user/cart
+Authorization Bearer <JWT_TOKEN>  (user only)
+
+response : 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "cart items retrieved successfully",
+  "data" : {
+    "cartId" : ""temp-hcbsdu77", //only for non-signedup users
+    items : [
+      {
+        "productId" : "49753847",
+        "productName" : "blah blah tshirt",
+        "quantity" : 1,
+        "price" : 10.99,
+        "totalPrice" : 40.99,
+        "imageUrl" : "https://example.com/image.jpg"
+      },
+      {
+        "productId" : "388847",
+        "productName" : "blah blah heels",
+        "quantity" : 1,
+        "price" : 14.99,
+        "totalPrice" : 28heels.99,
+        "imageUrl" : "https://example.com/image.jpg"
+      },
+      {
+        "productId" : "843788",
+        "productName" : "blah blah ",
+        "quantity" : 1,
+        "price" : 10.99,
+        "totalPrice" : 40.99,
+        "imageUrl" : "https://example.com/image.jpg"
+      }
+    ]
+  }
+}
+
+error : 
+200 emty cart with total of 0 
+500 internal server error
+404 cart not found please check cartId (for guest user)
+401 unauthorized
+403 forbidden
+
+3. update quantity of item in cart
+
+since carts are connected to userId in the cart model
+  => here :Database Structure: The cart is linked to the userId rather than a cartId
+
+
+two ways:-
+  auth (userId ) for signed-up users
+  cartId for guest users
+
+
+PUT api/v1/cart/:productId
+
+Authorization: Bearer <JWT_TOKEN> // Only for signed-up users
+Content-Type: application/json
+
+request 
+{
+  "cartId"  : "temp-hcbsdu77" // only for guest users,
+  "productId" : 1,
+  "quantity" : 1
+}
+
+response 
+{
+  "productId" : 1,
+  "quantity" : 3
+}
+
+error: 
+500
+400 invalid request / cartId /quantity
+401 unauthorized
+403 forbidden 
+404 product not found in the cart
+
+
+4. remove item from cart
+
+DELETE api/v1/cart/:productId
+
+response :
+
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "deleted successfully"
+}
+
+error: 
+500 
+400 invalid request / cartId / prodcutId 
+401 unauthorized
+403 forbidden
+404 product not found 
+
+5. clear cart
+
+DELETE api/v1/cart
+
+auth for signed up user
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+cartId from cookies for guest users
+request body:
+{
+  "cartId": "temp-hcbsdu77" // Only for guest users
+}
+
+
+response :
+
+{
+  "success": true,
+  "code": 200,
+  "message": "Cart cleared successfully"
+}
+
+error: 
+500 internal server error
+400 invalid request . / please provide a valid cart Id
+401 unauthorized
+403 forbidden
+404 cart not found
+
+
+_______________________________________________________________________________
+## wishlist management
+
+1. POST api/v1/whislist
+
+add to wishlist 
+
+> auth for signedup users:
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+> wishlistId for guest users
+
+
+request :
+
+{
+  "productId" : 3847958,
+  "wishlistId" : "temp-479573" // only for guest users
+}
+
+repsonse : 
+
+{
+  "productId" : 3847958,
+  "message" : "Added to whislist" 
+}
+
+error:
+
+500 internal server error
+400 invalid request /please provide a valid wishlistId /Please provide a valid productId.
+401 unauthorized
+403 forbidden
+404 productId / wishlistId not found
+409 Item already exists in the wishlist.
+
+
+2. get wishlist 
+
+GET api/v1/wishlist
+or
+GET /api/v1/wishlist?wishlistId=temp-479573 // only if the guest user wishlistId is'nt not sent with request body
+
+> auth for signedup users:
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+> wishlistId for guest users
+
+request
+{
+  "wishlistId" : "temp-479573" // only for guest users
+}
+
+response : 
+{
+  wishlistId : "temp-479573" // only for guest users,
+  "wishlist" : [
+    {
+      "productId" : 48354895,
+      "name" : "Gradient tshirt
+      "image" : "url..././",
+      "price" : "40.99"
+      "stock" : 2,
+      "Size" : "X-l"
+
+    },
+    {
+      "productId" : 48354895,
+      "name" : "Black wolves tshirt
+      "image" : "url..././",
+      "price" : "44.99"
+      "stock" : 2,
+      "Size" : "X-l"
+
+    }
+  ]
+}
+
+error :
+200 empty wishlist
+500 internal error
+400 invalid request / wishlistId invalid 
+401 unauthorized
+403 forbidden
+
+3. remove product from wishlist
+
+DELETE api/v1/wishlist 
+or
+DELETE api/v1/wishlist?wishlistId=temp-87634&productId=48354895 // only if the wishlistId and prodcutId isnt included in the request body
+
+> auth for signedup users:
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+> wishlistId for guest users
+
+request body : 
+{
+  "productId" : 48354895, 
+  "wishlistId" : 87634, // only for guest users
+}
+
+response :
+
+{
+  "messgae" : "item removed successfully"
+}
+
+
+error: 
+500 internal error
+400 invalid request/ productId invalid / wishlistId invalid
+401 unauthorized
+403 forbidden
+404 prodcutId not found
+409 item already removed
+
+
+
+
+
+
+
+
+
 
 
 
