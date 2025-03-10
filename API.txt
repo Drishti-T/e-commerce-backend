@@ -1153,7 +1153,7 @@ response : 200
 {
   "success" : true
   "code" : 200
-  "message" : "comment updated successfully",
+  "message" : "commente updated successfully",
 }
 
 error: 
@@ -1309,12 +1309,15 @@ Authorization: Bearer your_jwt_token (for super-admins)
     ]
   }
 
+
+
+
 3. PUT /api/v1/admin/users/metadata/:id
 
 Authorization: Bearer your_jwt_token (for super-admins)
-Content-Type: application/json
 
 request : 
+
 {
   "name" : "drishtitanwar",
   "role" : "admin"
@@ -1343,9 +1346,6 @@ error : 403 Forbidden : only admins allowed,
 
 
 
-
-
-
 4. DELETE a user
 
  authentication is req to get all user info ( only for super admins )
@@ -1367,6 +1367,7 @@ error : 403 Forbidden : only admins allowed,
         401 unauthorized,
         500 internal error
 
+    
 
 _______________________________________________________________________________
 ## Product management
@@ -1386,7 +1387,7 @@ response: 200
 
 "success" : true,
 "code" : 200,
-"query" : ["laptop" , "phone" , "tablet"],
+"query" : [laptop , phone , tablet]
 "products" : [
   {
     id: 123,
@@ -1414,6 +1415,12 @@ response: 200
 
 }
 
+error : 
+400 : bad request ( invalid search term)
+500: internal server error
+200 : no product is found (instead send the response as blank array [] )
+
+
 2. filter products
 
 no auth is req.
@@ -1424,137 +1431,171 @@ minPrice
 maxPrice
 color
 dressStyle = Casual , Formal , Party , Gym etc....
-size
+size = XX-Small , X-Small , Small , Medium , Large , X-Large , XX-Large , 3X-Large , 4X-large
 
 GET /api/v1/products/filter?category={category}&color={color}&dressStyle={dressStyle}&size={size}&price[min]={minPrice}&price[max]={maxPrice}
 
-example: GET /api/v1/products/filter?category=electronics&price[min]=100&price[max]=500
+example: GET /api/v1/products/filter?category=Tshirt&color={black}&dressStyle={Formal}&size={X-Large}&price[min]=100&price[max]=500
 
-
+color , size, dressStyle , category = // if frontend needs we will return it in the response or else wont .
 response : 200
 {
   "success" : true,
   "code" : 200,
-  filters: [electronics , black , 100000 , 150000]
+  filters: [Tshirt , black , 1000 , 1500]
   "products" : [
     {
     id: 123,
-    "name" : "blah blah laptop",
-    "price" : 120000,
+    "name" : "blah blah Tshirt",
+    "price" : 1200,
     "color" : "black",
-    "category" : "Electronics",
+    "size" : "X-Large",  
+    "category" : "Tshirt", 
+    "dressStyle" : "Formal",
     "imageUrl" : "https://example.com/laptop.jpg"
   },
   {
     id: 1334,
-    "name" : "ifruity phone",
-    "price" : 150000,
+    "name" : "blah blah Tshirt",
+    "price" : 1500,
     "color" : "black",
-    "category" : "Electronics",
+    "size" : "X-Large",
+    "category" : "Tshirt",
+    "dressStyle" : "Formal",
     "imageUrl" : "https://example.com/laptop.jpg"
   },
   {
     id: 1334,
-    "name" : "ifruity pad",
-    "price" : 150000,
+    "name" : "blah blah Tshirt",
+    "price" : 1500,
     "color" : "black",
-    "category" : "Electronics",
+    "size" : "X-Large",
+    "category" : "Tshirt",
+    "dressStyle" : "Formal",
     "imageUrl" : "https://example.com/laptop.jpg"
   },
   ]
 }
 
 error : 
-{
-  "success" : false,
-  "code" : 400,
-  "message" : "query parameter is required"
-}
 
-{
-  "success" : false,
-  "code" : 404,
-  "message" : "No products found"
-}
+200 (success but nothing is found instead send the response as blank array []) : products not found
+400 : incalid filter parameters
+500 : internal errors
 
-{
-  "success" : false,
-  "Code" ; 422,
-  "message" : "unprocessable filters"
-}
 
-{
-  "success" : false,
-  "code" : 500,
-  "message" : "internal error"
-}
+3. product recommendations
+
+// lets put it on hold a lil complicated 
+
+=> we can or not add authentication here but for this project user based recommendations will be added so yeah auth is needed
+
+=> Recommendation system needs the following data : 
+	1. User profile 
+	2. Browsing history
+	3. Purchase history
+	4. Adding to cart  or wishlist
+  5. similar user data
+
+
+Authorization Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+
+
+GET api/v1/products/recommended
+
 
 _______________________________________________________________________________
-
-##category management
-
-we dont need authentication here
+## category management 
 
 1. get all categories
 
-response : 200
+GET api/v1/categories
+
+we dont need auth here as it is public
+
+resonse : 200 
 {
-"success" : true,
-"code" : 200,
-"categories" : [
-  {
-    "id" : 3487,
-    "name" : "T-shirt",
-    "image" : "https://exam
-  },
-  {
-    "id" : 7584,
-    "name" : "Skirts",
-    "image" : "https://exampale.com/image1.jpg"
-  },
-  {
-    ....
-  }
-]
+  "success" : true,
+  "code" :200,
+  "categories" : [
+    {
+      "id"  : 1,
+      "name"  :"Tshirt",
+      "slug" : "tshirt",
+      "imageUrl"  : "https://example.com/image1.jpg"
+    } ,
+        {
+      "id"  : 1,
+      "name"  :"Short",
+      "slug" : "short",
+      "imageUrl"  : "https://example.com/image1.jpg"
+    },
+        {
+      "id"  : 1,
+      "name"  :"Skirt",
+      "slug" : "skirt",
+      "imageUrl"  : "https://example.com/image1.jpg"
+    },
+        {
+      "id"  : 1,
+      "name"  :"Hoodie",
+      "slug" : "hoodie",
+      "imageUrl"  : "https://example.com/image1.jpg"
+    },
+        {
+      "id"  : 1,
+      "name"  :"Jeans",
+      "slug" : "jeans",
+      "imageUrl"  : "https://example.com/image1.jpg"
+    },
+    {
+      ....
+    }
+
+  ]
 }
 
-error: 
+error : 
 
+200 : for empty category list  []
 500 internal error
-200 empty array categories not found
+400:  bad request (invalid category name )
 
-2. create categories  (super admins only)
-POST api/v1/admin/categories
-
+2. new category creation
 auth required only super - admins
 
 Authorization Bearer <JWT_TOKEN>
 Content-Type: application/json
 
 
-request : 
+POST api/v1/admin/category
+
+request body : 
 {
-  "name" : "Boots",
-  "image" : "https//:example.com/image.jpg",  
+  "name" : "Flats",
+  "slug" : "flats",
+  "imageUrl" : "https://example.com/image.jpg"
 }
 
-response : 
+response : 200
 {
-  "success" : true,
+  "success" : true ,
   "code" : 200,
-  "categories" : {
-    "id"  : 8746753,
-  },
-  "message" : "new category created successfully"
+  "category" : {
+    "id" : 12356
+  }
 }
 
+error : 
+400 : bad request (invalid fields) or duplicate category
+500 : internal error
+401 : unauthorized (please login)
+403: forbidden (only super-admins allowed)
+404 : invalid endpoint
 
-error: 
-500 internal error
-400 bad request / invalid fields
-401 unauthorized
-403 forbidden
-404 url not found
 
 3. update category
 
@@ -1587,6 +1628,9 @@ error:
 400
 404
 
+
+
+
 4. delete category
 
 Authorization Bearer <JWT_TOKEN> ( only super-admins)
@@ -1609,54 +1653,75 @@ error:
 404
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 _______________________________________________________________________________
 ## cart management
 
+1. add to cart
+
+= signedup user request
+POST api/v1/user/cart
+
+Authorization Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+  => here :Database Structure: The cart is linked to the userId rather than a cartId
+{
+  "productId":  "134632",
+  "quantity" : 2
+}
+
+and for non-signedup users (guest users )
+
+no auth is required
+
+request body :
+
+{
+  "cartId"  : "temp-hcbsdu77" // only for guest users,
+  "productId" : "12783",
+  "quantity" : 2
+}
+
+when a user sign's in merge guestCart to userCart and clear cartId from cookies or loacl storage
+
+repsonse : 
+{
+  "success" : true,
+"code" : 200,
+"message" : "item added to cart"
+}
 
 
-_______________________________________________________________________________
-## whishlist management
-
-_______________________________________________________________________________
-## order management
-
-_______________________________________________________________________________
-
-##payment management
-
-_______________________________________________________________________________
-## shipping management
-
-
-_______________________________________________________________________________
-## review management
+error : 
+500 Internal Server Error: Unexpected server issues.
+404 Product Not Found: Invalid productId.
+400 Bad Request: Missing/invalid cartId, quantity, or productId.
+403 Forbidden: Unauthorized attempt to access/modify a different cart.
+401 Unauthorized: Missing or invalid authentication for signed-up users.
+409 Conflict: Issues when merging guest and user carts.
+422 Unprocessable Entity: Validation errors or invalid data format.
+429 Too Many Requests: Rate-limiting enforcement.
+503 Service Unavailable: Service downtime or dependency failure.
+408 Request Timeout: Request took too long to complete.
 
 
-_______________________________________________________________________________
-## notifcation management
 
 
-_______________________________________________________________________________
-
-## discount and coupon management
+2. 
 
 
-_______________________________________________________________________________
-## analytics & repots (admin )
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
