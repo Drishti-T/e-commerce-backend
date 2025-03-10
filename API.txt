@@ -1523,7 +1523,104 @@ error:
 500 internal error
 200 empty array categories not found
 
-2. 
+2. create categories  (super admins only)
+POST api/v1/admin/categories
+
+auth required only super - admins
+
+Authorization Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+
+request : 
+{
+  "name" : "Boots",
+  "image" : "https//:example.com/image.jpg",  
+}
+
+response : 
+{
+  "success" : true,
+  "code" : 200,
+  "categories" : {
+    "id"  : 8746753,
+  },
+  "message" : "new category created successfully"
+}
+
+
+error: 
+500 internal error
+400 bad request / invalid fields
+401 unauthorized
+403 forbidden
+404 url not found
+
+3. update category
+
+Authorization Bearer <JWT_TOKEN> ( only super-admins)
+Content-Type: application/json
+
+
+PUT api/v1/admin/category/:id
+
+request body : 
+{
+  "name" : "heel boots",
+  "image" : "https://exampale.com/image2.jpg"
+}
+
+response : 
+{
+  "success" true,
+  "code" : 200,
+  "category :{ 
+    "id" : 8746753,
+    "name" : "heel boots",
+    "image" : "https://exampale.com/image2.jpg"
+  }
+}
+error: 
+500
+403
+401
+400
+404
+
+4. delete category
+
+Authorization Bearer <JWT_TOKEN> ( only super-admins)
+Content-Type: application/json
+
+DELETE api/v1/admin/category/:id
+
+response : 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "category deleted successfully"
+}
+
+error: 
+500
+403
+401
+400
+404
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
