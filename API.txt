@@ -1966,6 +1966,33 @@ error:
 404 prodcutId not found
 409 item already removed
 
+_______________________________________________________________________________
+
+## order management
+
+1. create order 
+
+> authentication required 
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+
+  POST api/v1/order
+
+request :
+
+ tip: safer to handle these calculations of price on the backend.
+
+{
+  "productId" : 843653,
+  "size" :  "X-l",
+  "price" : 40.99, //subtotal
+  "discount" : "5%"
+  "discountedPrice" : "38.94", // final price after discount
+  "coupoun" : "SUMMER20", // if applicable
+  "amountPaid" : "38.94", // total amt payable
+  "paymentMethod" : "UPI",
+}
+
 
 
 
