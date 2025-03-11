@@ -1985,13 +1985,163 @@ request :
 {
   "productId" : 843653,
   "size" :  "X-l",
-  "price" : 40.99, //subtotal
-  "discount" : "5%"
-  "discountedPrice" : "38.94", // final price after discount
   "coupoun" : "SUMMER20", // if applicable
-  "amountPaid" : "38.94", // total amt payable
   "paymentMethod" : "UPI",
 }
+
+repsonse: 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "order created",
+  "orderDetails" : {
+    "userId" : "48593",
+    "productId" : "45784798",
+     "size" :  "X-l",
+     "price" : 40.99, //subtotal
+     "discount" : "5%"
+     "discountedPrice" : "38.94", // final price after discount
+     "coupoun" : "SUMMER20", // if applicable
+     "amountPaid" : "38.94", // total amt payable
+     "paymentMethod" : "UPI"
+  }
+}
+
+error: 
+500 internal error
+400 Invalid Input Data	
+404 Product or Coupon Does Not Exist
+403 forbidden
+401 unauthorized
+
+2. get users order
+
+already created this endpoint in the users management list
+
+3. get order details
+
+GET api/v1/order/:id
+
+auth headers required (user's access)
+
+response :
+{
+  "success": true,
+  "code": 200,
+  "message": "Order details fetched successfully",
+  "order": {
+    "orderId": "ORD123456",
+    "userId": "48593",
+    "productId": "45784798",
+    "brand": "Puma",
+    "name": "Women's classic artisanal graphic printed hoodie",
+    "size": "X-S",
+    "status": {
+      "currentStatus":  {
+      "status" : "dispatched",
+      "updatedAt": "2025-03-11T12:00:00Z"
+      }
+    }
+      "deliveryTimeline": ["packed", "dispatched", "on the way", "delivered" ]
+    },
+    "cancelled" : false // true / false
+    "returnAvailable": true,
+    "returnDeadline": "Mon, 23 Dec",
+    "yourReview": "Great quality and fits perfectly!",
+    "yourRatings": 5,
+    "price": 40.99,
+    "discount": "5%",
+    "discountedPrice": 38.94,
+    "coupon": "SUMMER20",
+    "amountPaid": 38.94,
+    "paymentMethod": "UPI"
+  }
+}
+
+error : 
+
+500 internal error
+403 forbidden
+401 unauthorized
+400 bad request / invalid orderId
+404 order not found
+
+
+4. update order status (super-Admins only)
+
+PUT api/v1/admin/order/:id
+
+auth req. super admins only
+
+request :
+{
+  "name" : "Women's classic brown hoodie"
+    "status": {
+      "currentStatus":  {
+      "status" : "dispatched",
+      "updatedAt": "2025-03-11T12:00:00Z"
+      }
+    },
+}
+
+repsonse : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Order status updated",
+  "orderDetails": {
+    "orderId": "123456",
+    "name": "Women's classic brown hoodie",
+    "status": {
+      "currentStatus":  {
+      "status" : "dispatched",
+      "updatedAt": "2025-03-11T12:00:00Z"
+      }
+    }
+  }
+}
+
+error: 
+500 internal error
+400 bad request / invalid data
+401 unauthorized
+403 forbidden
+404 not found
+
+5. cancel order
+
+auth is required (user)
+
+POST api/v1/order/:id/cancel
+
+response : 
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "order cancelled",
+  "orderDetail" : {
+    "cancelled" : true
+  }
+}
+
+error: 
+500 internal server error
+404 order not found
+401 unauthorized
+403 forbidden
+400 bad request
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
