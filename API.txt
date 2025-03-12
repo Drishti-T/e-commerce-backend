@@ -2244,9 +2244,435 @@ response :
   }
 }
 
+_______________________________________________________________________________
+## shipping management
+
+1. GET api/v1/shipping/options
+
+or
+
+GET api/v1/shipping/options?pincode=110001&weight=2.5
+
+> Fetch available shipping providers from the database or third-party shipping API (e.g., ShipRocket, FedEx, Delhivery).
+> Calculate shipping charges based on pincode, package weight, delivery speed, etc.
+> Return a list of available shipping options.
+
+repsonse : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Shipping options retrieved successfully",
+  "shippingOptions": [
+    {
+      "id": "SHIP123",
+      "provider": "FedEx",
+      "service": "Standard Shipping",
+      "estimatedDelivery": "3-5 business days",
+      "cost": 50.00,
+      "currency": "INR"
+    },
+    {
+      "id": "SHIP456",
+      "provider": "BlueDart",
+      "service": "Express Shipping",
+      "estimatedDelivery": "1-2 business days",
+      "cost": 120.00,
+      "currency": "INR"
+    },
+    {
+      "id": "SHIP789",
+      "provider": "Delhivery",
+      "service": "Same Day Delivery",
+      "estimatedDelivery": "Same day",
+      "cost": 200.00,
+      "currency": "INR"
+    }
+  ]
+}
+
+
+error : 
+400 bad request
+500 internal server error
+404 no shipping options found
+
+2. create order / ser address
+auth required (users)
+
+POST api/v1/user/shipping/shipping-address
+
+request :
+{
+  "orderId": "123456",
+  "shippingOptionId": "SHIP456",
+  "address": {
+    "name": "Drishti T",
+    "phone": "+91-9876543210",
+    "street": "blah blah street ",
+    "city": "Delhi",
+    "state": "Delhi",
+    "pincode": "110001",
+    "country": "India"
+  }
+}
+
+Validate Order: Ensure that the given orderId exists and belongs to the authenticated user.
+Validate Shipping Option: Check if shippingOptionId is valid and available.
+Store Shipping Order in Database: Save shipping details and mark the order as "Processing".
+Return Confirmation: Respond with shipping details.
+
+response : 
+
+{
+  "success": true,
+  "code": 201,
+  "message": "Shipping order created successfully",
+  "shippingDetails": {
+    "shippingId": "SHIPORD789",
+    "orderId": "123456",
+    "shippingProvider": "BlueDart",
+    "service": "Express Shipping",
+    "estimatedDelivery": "1-2 business days",
+    "trackingId": "BLUEDART123456",
+    "status": "Processing"
+  }
+}
+
+error :
+400  bad request
+401 unauthorized
+403 forbidden
+404 order not found
+500 internal server request
+
+2. update shipping address
+
+PUT api/v1/user/shipping-address/:id
 
 
 
+request : 
+{
+  "address": {
+    "name": "Drishti T",
+    "phone": "+91-9876543210",
+    "street": "blah blah road",
+    "city": "Delhi",
+    "state": "Delhi",
+    "pincode": "110002",
+    "country": "India"
+  }
+}
+
+response : 
+
+{
+  "success": true,
+  "code": 200,
+  "message": "Shipping address updated successfully",
+  "updatedAddress": {
+    "shippingId": "SHIP789",
+    "name": "Drishti T",
+    "phone": "+91-9876543210",
+    "street": "blah blah road",
+    "city": "Delhi",
+    "state": "Delhi",
+    "pincode": "110002",
+    "country": "India"
+  }
+}
+
+error :
+400 invalid fields / bad request
+401 unauthorized
+403 forbidden (address dosnt belong to this user)
+404 no shipping Id found
+409 address cannot be updated as the order is already shipped
+500 internal server error
+
+4. check shipping status
+ GET api/v1/shipping/status/:id
+
+ auth required (users)
+
+response : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Shipping status retrieved successfully",
+  "shippingStatus": {
+    "orderId": "ORD12345",
+    "currentStatus": "On the way",
+    "expectedDelivery": "2025-03-15",
+    "trackingId": "TRACK987654",
+    "courier": "Blue Dart",
+    "lastUpdated": "2025-03-11T14:30:00Z"
+  }
+}
+
+
+
+error : 
+400 bad Request
+401 unauthorized
+403 forbidden
+404 id not found
+500 internal error
+
+5. cancel a shipping order
+
+POST api/v1/shipping/cancel/:id
+auth required
+
+response: 
+
+{
+  "success": true,
+  "code": 200,
+  "message": "Shipping order cancelled",
+  "orderDetail": {
+    "orderId": "ORD12345",
+    "cancelled": true,
+    "refundStatus": "Initiated"
+  }
+}
+
+error : 
+400  bad request
+401 unauthorized
+403 forbidden
+404 order not found
+409  cancellation not allowed
+500 internal error
+
+6. return order
+
+POST api/v1/shipping/return/:id
+
+auth req.
+
+request :
+
+{
+  "reason": "Received the wrong item",
+  "returnInitiatedAt": "2025-03-11T12:30:00Z"
+}
+
+
+response : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Return request initiated",
+  "returnDetails": {
+    "orderId": "ORD12345",
+    "status": "Return Requested",
+    "expectedPickupDate": "2025-03-14",
+    "refundStatus": "Pending"
+  }
+}
+
+error: 
+400 bad Request
+401 unauthorized
+403  forbidden
+404 order not found
+409 return not allowed
+500 internal error
+
+7. update delivery status
+
+auth req. (only super-admins)
+
+PUT api/v1/admin/shipping/update/:id
+
+request: 
+{
+  "status": {
+    "currentStatus": "Delivered",
+    "updatedAt": "2025-03-11T14:00:00Z"
+  }
+}
+
+
+repsonse : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Order delivery status updated",
+  "orderDetails": {
+    "orderId": "ORD12345",
+    "status": {
+      "currentStatus": "Delivered",
+      "updatedAt": "2025-03-11T14:00:00Z"
+    }
+  }
+}
+
+error:
+400  bad request
+401 unauthorized
+403 forbidden
+404 order not found
+500 internal error
+
+additional stuff :
+8. Webhook for Shipping Updates: Allow third-party APIs (e.g., FedEx, ShipRocket) to send real-time tracking updates.
+9. Estimated Delivery Date Calculator: Expose an endpoint like GET /shipping/estimate?origin=110001&destination=560001&weight=2.5 to pre-calculate delivery times.
+10 .Shipping Label Generation: Provide a PDF shipping label download via GET api/v1/shipping/label/:id.
+
+🔹 For small e-commerce startups: Use third-party shipping APIs (like ShipRocket, FedEx, or Delhivery).
+🔹 For large-scale operations: Build an in-house delivery system with real-time tracking & order assignment.
+
+
+_______________________________________________________________________________
+## review management
+
+1. get review fro the product
+
+GET api/v1/product/:id/reviews
+
+no auth req ,  public access
+
+response : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Product reviews retrieved successfully",
+  "productId": "PROD12345",
+  "reviews": [
+    {
+      "reviewId": "REV001",
+      "user": {
+        "userId": "USER123",
+        "name": "Drishti T",
+        "avatar": "https://example.com/avatar.jpg"
+      },
+      "rating": 5,
+      "comment": "Great product! High quality and fast delivery.",
+      "createdAt": "2025-03-11T14:30:00Z"
+    },
+    {
+      "reviewId": "REV002",
+      "user": {
+        "userId": "USER456",
+        "name": "John Doe",
+        "avatar": "https://example.com/avatar2.jpg"
+      },
+      "rating": 4,
+      "comment": "Good value for money. Packaging could be better.",
+      "createdAt": "2025-03-10T10:15:00Z"
+    }
+  ]
+}
+
+error :
+404 id not found
+400 bad request
+500 internal error
+
+2. add a review
+POST api/v1/product/:id/review
+
+auth req (users)
+{
+  "rating": 5,
+  "comment": "Amazing product! Loved it."
+}
+
+response : 
+{
+  "success": true,
+  "code": 201,
+  "message": "Review added successfully",
+  "review": {
+    "id": "REVIEW123",
+    "rating": 5,
+    "comment": "Amazing product! Loved it.",
+    "createdAt": "2025-03-12T12:34:56.000Z",
+    "user": {
+      "id": "USER56789",
+      "name": "John Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    }
+  }
+}
+
+error : 
+404 product id not found
+400 rating must be between 1 - 5
+500 internal server error
+403 forbidden
+401 unauthorized
+
+3. update review
+
+PUT api/v1/product/:id/review
+
+auth rq (users)
+
+request : 
+{
+  "reviewId": "REVIEW789",
+  "userId": "USER56789",
+  "rating": 4,
+  "comment": "Updated comment: The product is good but can be improved."
+}
+
+
+repsonse :
+{
+  "success": true,
+  "code": 200,
+  "message": "Review updated successfully",
+  "review": {
+    "id": "REVIEW789",
+    "rating": 4,
+    "comment": "Updated comment: The product is good but can be improved.",
+    "createdAt": "2025-03-12T12:34:56.000Z",
+    "updatedAt": "2025-03-12T13:00:00.000Z",
+    "user": {
+      "id": "USER56789",
+      "name": "John Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    }
+  }
+}
+
+
+error : 
+404 review not found
+403  unauthorized
+400 vlaidation error
+401  unauthorized
+500 internal error
+
+4. delete a review 
+
+DELETE api/v1/product/:id/delete
+
+auth req (user)
+
+response :
+{
+  "success" : true,
+  "code" : 200,
+  "message" : "comment removed",
+}
+
+
+error : 
+500 internal esrver error
+400 bad request  
+401 unauthorized
+403 forbidden
+404 review not found
+
+_______________________________________________________________________________
+## analytics & reports (admin)
+
+1. get sales report 
+GET api/v1/admin/reports/sales
 
 
 
