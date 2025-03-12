@@ -2116,13 +2116,16 @@ POST api/v1/order/:id/cancel
 
 response : 
 {
-  "success" : true,
-  "code" : 200,
-  "message" : "order cancelled",
-  "orderDetail" : {
-    "cancelled" : true
+  "success": true,
+  "code": 200,
+  "message": "Order cancelled",
+  "orderDetails": {
+    "orderId": "123456",
+    "cancelled": true,
+    "cancelledAt": "2025-03-11T12:30:00Z"
   }
 }
+
 
 error: 
 500 internal server error
@@ -2130,6 +2133,119 @@ error:
 401 unauthorized
 403 forbidden
 400 bad request
+
+_______________________________________________________________________________
+## payment management
+
+1. initiate payment
+
+
+ POST api/v1/payment/initiate
+
+{
+  "orderId": "123456",
+  "amount": 3894,  // Amount in paise (₹38.94 = 3894 paise)
+  "currency": "INR",
+  "paymentMethod": "UPI"
+}
+
+
+
+repsonse 
+{
+  "success": true,
+  "code": 200,
+  "message": "Payment initiated",
+  "razorpayOrderId": "order_H9DfU9GF8yJkVm",
+  "amount": 3894,
+  "currency": "INR",
+  "paymentMethod": "UPI",
+  "razorpayKey": "rzp_test_XXXXXX"
+}
+
+
+error : 
+400 bad request
+401 unauthorized
+403 forbidden
+404 order not found
+500 internal error
+
+
+2. verify a payment
+
+auth req (users)
+POST api/v1/payment/verify
+
+request: 
+{
+  "razorpayPaymentId": "pay_H9DfU9GF8yJkVm",
+  "razorpayOrderId": "order_H9DfU9GF8yJkVm",
+  "razorpaySignature": "a_valid_signature"
+}
+
+
+response:
+{
+  "success": true,
+  "code": 200,
+  "message": "Payment verified successfully",
+  "paymentDetails": {
+    "orderId": "123456",
+    "transactionId": "txn_789654",
+    "paymentId": "pay_H9DfU9GF8yJkVm",
+    "status": "successful",
+    "amountPaid": 38.94,
+    "currency": "INR",
+    "paymentMethod": "UPI",
+    "paidAt": "2025-03-11T12:00:00Z"
+  }
+}
+
+
+error :
+400 bad request
+401 unauthorized
+403 forbidden
+404 transaction not found
+409 payment already verififed
+500 internal server error
+
+3. get payment history
+
+GET api/v1/payment/history
+
+GET api/v1/payment/history?limit=10&page=1
+Authorization: Bearer <JWT_TOKEN>
+
+response :
+
+
+{
+  "success": true,
+  "code": 200,
+  "message": "Payment history retrieved",
+  "payments": [
+    {
+      "orderId": "123456",
+      "transactionId": "txn_789654",
+      "razorpayPaymentId": "pay_H9DfU9GF8yJkVm",
+      "status": "successful",
+      "amountPaid": 3894,
+      "currency": "INR",
+      "paymentMethod": "UPI",
+      "paidAt": "2025-03-10T15:45:00Z"
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 3,
+    "totalRecords": 25
+  }
+}
+
+
+
 
 
 
