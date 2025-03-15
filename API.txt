@@ -2675,6 +2675,170 @@ _______________________________________________________________________________
 GET api/v1/admin/reports/sales
 
 
+response : 
+{
+  "success": true,
+  "code": 200,
+  "message": "Sales report fetched successfully",
+  "report": {
+    "totalRevenue": 105420.50,
+    "totalOrders": 567,
+    "totalProductsSold": 1203,
+    "averageOrderValue": 185.90,
+    "bestSellingProducts": [
+      {
+        "productId": "PROD123",
+        "name": "Wireless Gaming Mouse",
+        "unitsSold": 150,
+        "totalRevenue": 7500.00
+      },
+      {
+        "productId": "PROD456",
+        "name": "Mechanical Keyboard",
+        "unitsSold": 120,
+        "totalRevenue": 8400.00
+      }
+    ],
+    "topCustomers": [
+      {
+        "customerId": "USER987",
+        "name": "Alice Johnson",
+        "totalSpent": 3400.75,
+        "totalOrders": 12
+      },
+      {
+        "customerId": "USER654",
+        "name": "John Doe",
+        "totalSpent": 2890.30,
+        "totalOrders": 9
+      }
+    ],
+    "totalDiscountsGiven": 1240.50,
+    "totalTaxesCollected": 9520.75,
+    "salesByMonth": [
+      { "month": "January", "revenue": 15420.00 },
+      { "month": "February", "revenue": 16800.00 },
+      { "month": "March", "revenue": 17400.50 }
+    ]
+  }
+}
+
+error: 400
+500
+403
+400
+401
+404
+
+2. get inventory reports 
+
+GET /api/v1/admin/reports/inventory?category=electronics&lowStock=true
+
+category	|| string	  || Filter by product category (e.g., electronics, apparel).
+lowStock	|| boolean	|| If true, returns only low-stock products.
+
+
+
+
+response 
+{
+  "status": "success",
+  "data": {
+    "inventory": [
+      {
+        "id": "prod_12345",
+        "name": "Smartphone XYZ",
+        "category": "electronics",
+        "stock": 5,
+        "lowStockThreshold": 10
+      },
+      {
+        "id": "prod_67890",
+        "name": "Laptop ABC",
+        "category": "electronics",
+
+        "stock": 3,
+        "lowStockThreshold": 5
+      }
+    ],
+    "totalLowStockItems": 2
+  }
+}
+
+in case of empty inventory:
+
+{
+  "status": "success",
+  "data": {
+    "inventory": [],
+    "totalLowStockItems": 0
+  }
+}
+
+
+error :
+
+400 bad request / Invalid category provided
+404 not found
+500 internal error 
+401 unauthorized
+403 forbidden 
+
+
+_______________________________________________________________________________
+## notification management
+
+1. GET notification
+
+GET api/v1/notifcations
+
+fetch all notifcations for all the users
+
+auth req. (user)
+
+response: 200
+{
+  "success": true,
+  "data": [
+    {
+      "id": "notif_123",
+      "userId": "user_456",
+      "type": "order_update",
+      "message": "Your order #ORD789 has been shipped.",
+      "isRead": false,
+      "createdAt": "2025-03-13T10:00:00Z"
+    },
+    {
+      "id": "notif_456",
+      "userId": "user_456",
+      "type": "discount",
+      "message": "Exclusive 15% off for you!",
+      "isRead": true,
+      "createdAt": "2025-03-12T09:30:00Z"
+    }
+  ]
+}
+
+
+and if admin wants to get the notfication for a particular user
+GET /api/v1/notifications?userId=user_456
+Authorization: Bearer <admin_token>
+
+extract the user id from the url ID=user_45
+
+error : 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
