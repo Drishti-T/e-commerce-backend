@@ -21,5 +21,9 @@ This setup provides the minimal setup to help you get started
 - npm run test-env (Project runs in test mode i.e. the env file loaded will be of test mode)
 - npm run start (Project runs in production mode i.e. the env file loaded will be of production mode)
 
-
+## env files
+ make sure to create 3 env files
+- .env
+- .env.development
+- .env.test
 
