@@ -9,10 +9,14 @@ This setup provides the minimal setup to help you get started
 - npm install Hono
 
 ## Also we will be using few more extra libraries
-- cookie-parser
-- cors
-- jsonwebtoken
-- path 
+- npm install cookie-parser
+- npm install cors
+- npm install jsonwebtoken
+- path (no need to install)
+- npm install dotenv
+- npm install --save-dev @babel/core @babel/node @babel/preset-env babel-plugin-module-resolver
+
+
 
 ## how will you run the project
 - make sure to check the package.json file

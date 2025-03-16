@@ -2,7 +2,7 @@
 import { Hono } from "hono";
 import dotenv from "dotenv";
 import authRouter from "./v1/auth";
-import v1route from "./v1/routes";
+import v1route from "./routes";
 
 
 //load environment variables from .env file
