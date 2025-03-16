@@ -2,7 +2,6 @@
 import { Hono } from "hono";
 import dotenv from "dotenv";
 import authRouter from "./auth";
-import OauthRouter from "./auth/0auth";
 
 
 //load environment variables from .env file
@@ -18,7 +17,7 @@ const app = new Hono();
 const PORT = 3000 || process.env.PORT //default route
 
 
-//routes
+//.
 
 //default route 
 app.get('/', (c) => {
@@ -50,7 +49,6 @@ app.get('/', (c) => {
 
 
 app.route('/api/v1/auth' , authRouter);
-app.route('/api/v1/auth/Oauth' , OauthRouter);
 
 
 
