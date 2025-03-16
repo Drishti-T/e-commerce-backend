@@ -534,7 +534,9 @@ authentication req. for super-admins , product manager
 Authorization: Bearer your_jwt_token (for super-admins/product manager)
 Content-Type: application/json
 
-POST api/v1/admin/product
+
+
+POST api/v1/admin/product 
 
 request body: 
 
@@ -2828,8 +2830,318 @@ extract the user id from the url ID=user_45
 
 error : 
 
+500 	"Internal server error"
+400 bad request / invalid id
+401 unauthorized
+403 Forbidden - You do not have access"
+404 "No notifications found"
+
+2. Mark a Notification as Read // (if required)
+
+Authorization: Bearer <token>
+
+PUT api/v1/notifcations/abc123/read 
+
+repsonse: 
+{
+  "success" : true,
+  "code" : 200
+  "message" : "Notification marked as read"
+}
+
+error : 
+500 "Internal server error"
+400 bad request / invalid id
+401 unauthorized
+403 Forbidden - You do not have access"
+404 notifcation not found
+
+3. delete a notification
+
+DELETE /api/v1/notifications/abc123
+Authorization: Bearer <token> (users)
 
 
+DELETE api/v1/notifications/:id
+
+response : 
+
+{
+  "success": true,
+  "message": "Notification deleted"
+}
+
+error:
+500 internal server error
+400 bad request
+401 unauthorized
+404 notification not founc
+403 forbidden
+
+4. send a new notification
+
+POST api/v1/notifications
+
+Authorization: Bearer <token>
+Content-Type: application/json
+
+request :
+{
+  "userId": "user_123",
+  "type": "discount",
+  "message": "Flash sale: 20% off on all items!"
+}
+
+response : 
+{
+  "success": true,
+  "message": "Notification created",
+  "data": {
+    "id": "def456",
+    "type": "discount",
+    "message": "Flash sale: 20% off on all items!",
+    "isRead": false,
+    "createdAt": "2025-03-13T10:05:00Z"
+  }
+}
+
+
+_______________________________________________________________________________
+
+## DISCOUNT AND COUPON MANAGEMENT
+
+GET /api/v1/coupons
+Authorization: Bearer <user_or_admin_token>
+
+GET api/v1/coupons
+
+response : 
+{
+  "success": true,
+  "data": [
+    {
+      "id": "coupon_123",
+      "code": "SAVE10",
+      "description": "Get 10% off on all electronics",
+      "discountType": "percentage",
+      "discountValue": 10,
+      "minOrderValue": 500,
+      "maxDiscount": 100,
+      "status": "active",
+      "validFrom": "2025-03-10T00:00:00Z",
+      "validTo": "2025-03-31T23:59:59Z",
+      "usageLimit": 100,
+      "used": 45
+    },
+    {
+      "id": "coupon_456",
+      "code": "FREESHIP",
+      "description": "Free shipping on orders above $50",
+      "discountType": "free_shipping",
+      "discountValue": null,
+      "minOrderValue": 50,
+      "maxDiscount": null,
+      "status": "active",
+      "validFrom": "2025-03-01T00:00:00Z",
+      "validTo": "2025-03-31T23:59:59Z",
+      "usageLimit": 200,
+      "used": 120
+    }
+  ]
+}
+
+admin fetching all the coupouns
+{
+  "success": true,
+  "data": [
+    {
+      "id": "coupon_123",
+      "code": "SAVE10",
+      "status": "active",
+      "validFrom": "2025-03-10T00:00:00Z",
+      "validTo": "2025-03-31T23:59:59Z",
+      "used": 45,
+      "usageLimit": 100
+    },
+    {
+      "id": "coupon_789",
+      "code": "SUMMER20",
+      "status": "expired",
+      "validFrom": "2025-02-01T00:00:00Z",
+      "validTo": "2025-02-28T23:59:59Z",
+      "used": 90,
+      "usageLimit": 100
+    }
+  ]
+}
+
+
+error :
+
+400 invalid query parameters 
+401 unauthorized
+403 forbidden
+404 no coupons found
+500 internal server error
+
+2. apply coupon to cart
+
+Authorization: Bearer <user_token>
+Content-Type: application/json
+
+POST api/v1/cart/appy-coupon
+
+request: 
+{
+  "couponCode": "SAVE10"
+}
+
+
+reponse :
+
+{
+  "success": true,
+  "message": "Coupon applied successfully!",
+  "cart": {
+    "subtotal": 1000.00,
+    "discount": 100.00,
+    "total": 900.00,
+    "appliedCoupon": {
+      "code": "SAVE10",
+      "discountType": "percentage",
+      "discountValue": 10,
+      "maxDiscount": 100,
+      "status": "active",
+      "validUntil": "2025-03-31T23:59:59Z"
+    }
+  }
+}
+
+example #1:-
+If SAVE10 is a 10% off coupon, and the cart subtotal is $1000, then:
+discount = 10% of 1000 = $100
+Max Discount Cap Applied? ✅ $100 <= maxDiscount ($100)
+Final Total = $900
+
+
+for example #2 (free shipping coupon:- FREESHIP removes the shipping fee but doesn't change the cart subtotal.)
+
+repsonse:
+{
+  "success": true,
+  "message": "Coupon applied successfully!",
+  "cart": {
+    "subtotal": 75.00,
+    "discount": 0.00,
+    "shipping": 0.00,
+    "total": 75.00,
+    "appliedCoupon": {
+      "code": "FREESHIP",
+      "discountType": "free_shipping",
+      "discountValue": null,
+      "status": "active",
+      "validUntil": "2025-03-31T23:59:59Z"
+    }
+  }
+}
+
+error:
+
+400 invalid request body / expired coupon / coupon is not applicable to your cart / coupon usage limit exceeded
+404 coupon not found
+401 unauthorized
+500 internal server error
+
+3. remove coupon by user
+
+ DELETE /api/v1/cart/remove-coupon
+
+
+request: 
+{
+  "couponCode": "SAVE10"
+}
+
+
+response : 
+{
+  "success": true,
+  "message": "Coupon removed successfully!",
+  "cart": {
+    "subtotal": 1000.00,
+    "discount": 0.00,
+    "total": 1000.00,
+    "appliedCoupon": null
+  }
+}
+
+3. admin create coupon
+
+Authorization: Bearer <admin_token> super-adminsonly
+Content-Type: application/json
+
+POST api/v1/admin/create-coupon
+
+request : 
+{
+  "code": "SAVE10",
+  "discountType": "percentage", 
+  "discountValue": 10,
+  "minPurchase": 500,
+  "maxDiscount": 100,
+  "validFrom": "2025-03-15T00:00:00Z",
+  "validUntil": "2025-04-15T23:59:59Z",
+  "usageLimit": 100,
+  "status": "active"
+}
+
+response : 
+{
+  "success": true,
+  "message": "Coupon created successfully!",
+  "coupon": {
+    "id": "coupon_12345",
+    "code": "SAVE10",
+    "discountType": "percentage",
+    "discountValue": 10,
+    "minPurchase": 500,
+    "maxDiscount": 100,
+    "validFrom": "2025-03-15T00:00:00Z",
+    "validUntil": "2025-04-15T23:59:59Z",
+    "usageLimit": 100,
+    "status": "active",
+    "createdAt": "2025-03-13T12:00:00Z"
+  }
+}
+
+error: 
+400 invalid data
+409 coupon already exists
+403 forbidden
+500 internal server error
+
+
+4. admin delete coupon
+
+DELETE /api/v1/admin/coupon/coupon_12345
+Authorization: Bearer <admin_token>
+
+
+DELETE api/v1/admin/coupon/:id
+
+
+response :
+{
+  "success": true,
+  "message": "Coupon deleted successfully!"
+}
+
+error :
+
+400 coupon Id not found
+404 coupons not found
+403 forbidden
+500 internal server error
 
 
 
