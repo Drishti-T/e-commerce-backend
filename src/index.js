@@ -1,7 +1,8 @@
 // add all imports at top
 import { Hono } from "hono";
 import dotenv from "dotenv";
-import authRouter from "./auth";
+import authRouter from "./v1/auth";
+import v1route from "./v1/routes";
 
 
 //load environment variables from .env file
@@ -49,6 +50,7 @@ app.get('/', (c) => {
 
 
 app.route('/api/v1/auth' , authRouter);
+app.route('/api/v1' , v1route);
 
 
 
