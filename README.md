@@ -26,11 +26,11 @@ This setup provides the minimal setup to help you get started
 ## env files
 make sure to create 3 env files
 
-.env
-.env.development
-.env.test
+- .env
+- .env.development
+- .env.test
 
 ## zod tyesafety
 we also need to create zod schemas for incoming request type checking
 
-lib/zod/schemas
+- lib/zod/schemas
