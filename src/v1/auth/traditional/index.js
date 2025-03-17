@@ -1,19 +1,32 @@
 import { Hono } from "hono";
+import { errorResponse } from "@utils/responseHandler";
+import userSignupSchema from "@zod/schemas/user";
 
 const traditionalAuth = new Hono();
 
-traditionalAuth.post("/signup", async (req, res) => {
+traditionalAuth.post("/signup", async (c) => {
     try {
         // parse the request
         const body = await c.req.json();
-        const parsedBody  = signupSchema.safeParse(body)
-        const { name, email, password, DOB, country, phoneNumber, type, refreshToken } = req.body;
-        
-        // validate the required fields
-        
-        
-        // logic to add user  to db
 
+        //validate the request body
+        const parsedBody  = userSignupSchema.safeParse(body);
+        if (!parsedBody.success) {
+            return c.json({ error: parsedBody.error.format() }, 400);
+        }
+
+        // extract the data from parsed body
+        const { name, email, password, DOB, country, phoneNumber, type, refreshToken } = parsedBody;      
+
+
+        //check if the email already exists
+        //const existingEmail = // check int he db;
+        if(existingEmail) {
+            return errorResponse(c, 409, "Email already exists")
+        }
+ 
+                
+        // logic to add user to db
 
         c.json({
             userId ,

@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./",
+      "paths": {
+        "@zod/*": ["lib/zod/*"],
+        "@routes/*": ["src/v1/routes/*"],
+        "@controllers/*": ["src/v1/controllers/*"],
+        "@middlewares/*": ["src/v1/middlewares/*"],
+        "@utils/*": ["src/v1/utils/*"]
+      }
+    }
+  }
+  
