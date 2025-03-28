@@ -15,9 +15,9 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "hono": "^4.7.2",
+    "prisma": "^6.5.0",
     "zod": "^3.24.2"
   },
-  
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/node": "^7.26.0",
