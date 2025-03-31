@@ -455,6 +455,7 @@ ________________________________________________________________________________
   "category": "Men > Hoodies & Sweatshirts",
   "price": 49.99,
   "discountPrice": 39.99,
+  "percentDiscount" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -547,6 +548,7 @@ request body:
   "category": "Men > Hoodies & Sweatshirts",
   "price": 49.99,
   "discountPrice": 39.99,
+  "percentDiscount" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -657,8 +659,9 @@ response body:
   "description": "A comfortable oversized hoodie made from premium cotton blend, perfect for casual wear.",
   "brand": "Nike",
   "category": "Men > Hoodies & Sweatshirts",
-  "price": 49.99,
-  "discountPrice": 39.99,
+  "price": 260.99
+  "discountPrice": 240.99,
+  "percentDiscount" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -797,7 +800,9 @@ PUT api/v1/product/:id
 // only send those fields which are needed to be update
 request body:
 {
-  "discountPrice" : 36.99
+  "discountPrice" : 36.99,
+  "percentDiscount" : 20
+
 }
 
 error : 
@@ -833,6 +838,31 @@ for invalid data format:
 "code" : 400,
 "message" : "invalid data"
 }
+
+7. get new arrivals (Acc to creation date and time)
+
+/api/products/newArrivals?limit=10
+
+response :200
+
+{
+  "success": true,
+  "data": [
+    {
+      "name": "Men's Oversized Hoodie",
+      "price": 39.99,
+      "rating": 4.7,
+      "brand": "Nike"
+    },
+    {
+      "name": "Women's Crop Top",
+      "price": 19.99,
+      "rating": 4.5,
+      "brand": "Adidas"
+    }
+  ]
+}
+
 
 
 _______________________________________________________________________________
