@@ -455,7 +455,7 @@ ________________________________________________________________________________
   "category": "Men > Hoodies & Sweatshirts",
   "price": 49.99,
   "discountPrice": 39.99,
-  "percentDiscount" : 20
+  "discountValue" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -548,7 +548,7 @@ request body:
   "category": "Men > Hoodies & Sweatshirts",
   "price": 49.99,
   "discountPrice": 39.99,
-  "percentDiscount" : 20
+  "discountValue" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -661,7 +661,7 @@ response body:
   "category": "Men > Hoodies & Sweatshirts",
   "price": 260.99
   "discountPrice": 240.99,
-  "percentDiscount" : 20
+  "discountValue" : 20
   "currency": "USD",
   "stock": {
     "quantity": 200,
@@ -801,7 +801,7 @@ PUT api/v1/product/:id
 request body:
 {
   "discountPrice" : 36.99,
-  "percentDiscount" : 20
+  "discountValue" : 20
 
 }
 
@@ -848,18 +848,28 @@ response :200
 {
   "success": true,
   "data": [
+   {
+        "id": "PROD001",
+        "name": "T-shirt with Tape Details",
+        "image": "/images/products/Frame32.png",
+        "currency" : "USD",
+        "price": 120.99,
+        "discountPrice": null,
+        "discountValue" : null,
+        "rating": 4.7,
+        "brand": "Puma"
+      },
     {
-      "name": "Men's Oversized Hoodie",
-      "price": 39.99,
-      "rating": 4.7,
-      "brand": "Nike"
-    },
-    {
-      "name": "Women's Crop Top",
-      "price": 19.99,
-      "rating": 4.5,
-      "brand": "Adidas"
-    }
+        "id": "PROD001",
+        "name": "T-shirt with Tape Details",
+        "image": "/images/products/Frame32.png",
+        "currency" : "USD",
+        "price": 120.99,
+        "discountPrice": 39.99,
+        "discountValue" : 21,
+        "rating": 4.7,
+        "brand": "Puma"
+      },
   ]
 }
 
@@ -2031,7 +2041,7 @@ repsonse:
     "productId" : "45784798",
      "size" :  "X-l",
      "price" : 40.99, //subtotal
-     "discount" : "5%"
+     "discount" : 5
      "discountedPrice" : "38.94", // final price after discount
      "coupoun" : "SUMMER20", // if applicable
      "amountPaid" : "38.94", // total amt payable
@@ -2082,7 +2092,7 @@ response :
     "yourReview": "Great quality and fits perfectly!",
     "yourRatings": 5,
     "price": 40.99,
-    "discount": "5%",
+    "discount": 5,
     "discountedPrice": 38.94,
     "coupon": "SUMMER20",
     "amountPaid": 38.94,
