@@ -20,7 +20,7 @@ traditionalAuth.post("/signup", async (c) => {
 
 
         //check if the email already exists
-        //const existingEmail = // check int he db;
+        //const existingEmail = // check in the db for existing email;
         if(existingEmail) {
             return errorResponse(c, 409, "Email already exists")
         }
