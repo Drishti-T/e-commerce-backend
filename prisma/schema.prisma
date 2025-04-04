@@ -17,16 +17,45 @@ datasource db {
 model User {
   id          String     @id @default(cuid())
   name        String
-  email       String     @unique
-  password    String
-  avatar      String?
+  email       String    @unique
+  passwordHash    String // Null  for 0auth users
+  avatar      String
   role        Role       @default(CUSTOMER)
-  addresses   Address[]
-  cartItems   CartItem[]
-  orders      Order[]
-  reviews     Review[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+
+
+  //relational data
+  addresses   Address[]
+  cartItems   CartItem[] // we might want to store this into a session
+  orders      Order[]
+  reviews     Review[]
+  accounts Account[] 
+  session Session[] 
+}
+
+model Account {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId] , references: [id], onDelete: Cascade)
+  provider String
+  providerAccountId String
+  refresh_token String? @db.Text
+  refresh_token_expires_in Int?
+  access_token String? @db.Text
+  access_token_expires_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.Text
+  session_state String?
+}
+
+model Session {
+ id String @id @default(cuid())
+ sessionToken String @unique
+ userId String
+ expires DateTime
+ user User @relation(fields: [userId] , references: [id] , onDelete: Cascade)
 }
 
 enum Role {
