@@ -9,7 +9,7 @@ ________________________________________________________________________________
      {
         "name" : "drishti",
         "email" : "drishti@gmail.com",
-        "passowrd" : "kjshjsbjvknckj",
+        "passowrdHash" : "kjshjsbjvknckj",
         "DOB" : {
             "date" : "1",
             "month" : "01",
@@ -1233,7 +1233,9 @@ response : 200
   "code": 200,
   "message": "Comment fetched successfully",
   "data": {
-    "comment": "blahblah"
+    "comment": "blahblah",
+    "stars" : 4,    
+    "userName" : "Sarah M.",
   }
 }
 
@@ -1256,6 +1258,9 @@ error:
   "code" : 500,
   "message" : "Internal error"
 }
+
+5. get all comments 
+GET api/v1/comment
 
 _______________________________________________________________________________
 ## user management
