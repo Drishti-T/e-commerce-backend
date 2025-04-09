@@ -1232,11 +1232,21 @@ response : 200
   "success": true,
   "code": 200,
   "message": "Comment fetched successfully",
-  "data": {
+  "data": [{
     "comment": "blahblah",
     "stars" : 4,    
     "userName" : "Sarah M.",
-  }
+  },
+  {
+    "comment": "blahblah",
+    "stars" : 4,    
+    "userName" : "Sarah M.",
+  },{
+    "comment": "blahblah",
+    "stars" : 4,    
+    "userName" : "Sarah M.",
+  },
+  ]
 }
 
 error: 
